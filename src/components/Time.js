@@ -8,6 +8,7 @@ const TimeWrapper = styled.div`
   font-size: 32px;
   color: #fff;
   grid-gap: 20px;
+  text-align: center;
 `;
 
 const Time = () => {
