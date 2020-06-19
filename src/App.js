@@ -9,15 +9,6 @@ const AppWrapper = styled.div`
   height: 100vh;
 `;
 
-// const Header = styled.header`
-//   min-height: 100vh;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: center;
-//   color: #fff;
-// `;
-
 const BodyWrapper = styled.div`
   display: grid;
   grid-template-rows 1fr 0.5fr auto;

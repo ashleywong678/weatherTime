@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-// import PropTypes from 'prop-types';
 import moment from "moment";
 
 const TimeWrapper = styled.div`
@@ -12,11 +11,9 @@ const TimeWrapper = styled.div`
 `;
 
 const Time = () => {
-  const [time, setTime] = useState(moment().format("LTS"));
+  const [time, setTime] = useState(moment().format("hh:mm:ss A"));
 
-  useEffect(() => {
-    setTime(moment().format("LTS"));
-  }, [time]);
+  setInterval(() => setTime(moment().format("hh:mm:ss A")), 500);
 
   return (
     <TimeWrapper>
