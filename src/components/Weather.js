@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
+
+const geoToken = process.env.REACT_APP_GEOCODE_TOKEN;
+const weatherToken = process.env.REACT_APP_WEATHER_TOKEN;
 
 const WeatherWrapper = styled.div`
   display: grid;
@@ -44,9 +48,30 @@ const Button = styled.div`
 
 const Weather = () => {
   const [search, setSearch] = useState("");
+  const [address, setAddress] = useState("");
 
-  const handleSearch = (searchTerm) => {
-    console.log(searchTerm);
+  const handleSearch = async () => {
+    const geo = await axios
+      .get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          search
+        )}.json?access_token=${geoToken}`
+      )
+      .then(({ data }) => ({
+        latitude: data.features[0].center[1],
+        longitude: data.features[0].center[0],
+        location: data.features[0].place_name,
+      }));
+
+    setAddress(geo.location);
+    console.log(geo);
+
+    const forecast = await axios
+      .get(
+        // api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={your api key}
+        `https://api.openweathermap.org/data/2.5/weather?lat=${geo.latitude}&lon=${geo.longitude}&appid=${weatherToken}`
+      )
+      .then((res) => console.log(res.data));
   };
 
   return (
@@ -58,7 +83,7 @@ const Weather = () => {
           value={search}
           placeholder="Search location to get weather info..."
         />
-        <Button onClick={() => handleSearch(search)}>Search</Button>
+        <Button onClick={() => handleSearch()}>Search</Button>
       </SearchWrapper>
     </WeatherWrapper>
   );
