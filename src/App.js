@@ -13,8 +13,8 @@ const AppWrapper = styled.div`
 const BodyWrapper = styled.div`
   display: grid;
   grid-template-rows 1fr auto;
-  padding: 100px 20px 0px 20px;
-  grid-gap: 40px;
+  padding: 50px 40px 0px 40px;
+  grid-gap: 50px;
 `;
 
 function App() {
