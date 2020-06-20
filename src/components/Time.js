@@ -18,7 +18,10 @@ const Time = () => {
 
   return (
     <TimeWrapper>
-      <div>{moment().format("[Today is:] dddd, MMMM Do YYYY")}</div>
+      <div>Today is</div>
+      <div>
+        <b>{moment().format("dddd, MMMM Do YYYY")}</b>
+      </div>
       <div>{time}</div>
     </TimeWrapper>
   );
