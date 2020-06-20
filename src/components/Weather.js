@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
+import LocalInfo from "./LocalInfo";
+
 const geoToken = process.env.REACT_APP_GEOCODE_TOKEN;
 const weatherToken = process.env.REACT_APP_WEATHER_TOKEN;
 
@@ -35,7 +37,7 @@ const Searchbar = styled.input`
   padding: 15px;
 `;
 
-const Button = styled.div`
+const Button = styled.button`
   display: inline-block;
   border: 2px solid #2bdcff;
   background: transparent;
@@ -44,34 +46,51 @@ const Button = styled.div`
   border-radius: 30px;
   width: fit-content;
   padding: 10px;
+  outline: none;
 `;
 
 const Weather = () => {
   const [search, setSearch] = useState("");
   const [address, setAddress] = useState("");
+  const [forecast, setForecast] = useState({});
 
   const handleSearch = async () => {
     const geo = await axios
       .get(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
           search
-        )}.json?access_token=${geoToken}`
+        )}.json?access_token=${geoToken}&limit=1`
       )
-      .then(({ data }) => ({
-        latitude: data.features[0].center[1],
-        longitude: data.features[0].center[0],
-        location: data.features[0].place_name,
-      }));
+      .then(({ data }) => {
+        console.log("geo", data);
+        return {
+          latitude: data.features[0].center[1],
+          longitude: data.features[0].center[0],
+          location: data.features[0].matching_place_name,
+        };
+      });
 
-    setAddress(geo.location);
-    console.log(geo);
+    setAddress(geo);
 
-    const forecast = await axios
+    const forecastData = await axios
       .get(
         // api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={your api key}
-        `https://api.openweathermap.org/data/2.5/weather?lat=${geo.latitude}&lon=${geo.longitude}&appid=${weatherToken}`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${geo.latitude}&lon=${geo.longitude}&appid=${weatherToken}&units=imperial`
       )
-      .then((res) => console.log(res.data));
+      .then(({ data }) => {
+        console.log("data", data);
+        return {
+          currentTemp: data.main.temp,
+          feelsLikeTemp: data.main.feels_like,
+          minTemp: data.main.temp_min,
+          maxTemp: data.main.temp_max,
+          humidity: data.main.humidity,
+          sunrise: data.sys.sunrise,
+          sunset: data.sys.sunset,
+          description: data.weather[0].main,
+        };
+      });
+    setForecast(forecastData);
   };
 
   return (
@@ -81,10 +100,13 @@ const Weather = () => {
         <Searchbar
           onChange={(event) => setSearch(event.target.value)}
           value={search}
-          placeholder="Search location to get weather info..."
+          placeholder="Search address, city or zip code"
         />
         <Button onClick={() => handleSearch()}>Search</Button>
       </SearchWrapper>
+      {Object.keys(forecast).length > 0 && (
+        <LocalInfo address={address} forecast={forecast} />
+      )}
     </WeatherWrapper>
   );
 };
