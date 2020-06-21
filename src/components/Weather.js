@@ -74,22 +74,18 @@ const Weather = () => {
 
     const forecastData = await axios
       .get(
-        // api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={your api key}
         `https://api.openweathermap.org/data/2.5/weather?lat=${geo.latitude}&lon=${geo.longitude}&appid=${weatherToken}&units=imperial`
       )
-      .then(({ data }) => {
-        console.log("data", data);
-        return {
-          currentTemp: data.main.temp,
-          feelsLikeTemp: data.main.feels_like,
-          minTemp: data.main.temp_min,
-          maxTemp: data.main.temp_max,
-          humidity: data.main.humidity,
-          sunrise: data.sys.sunrise,
-          sunset: data.sys.sunset,
-          description: data.weather[0].main,
-        };
-      });
+      .then(({ data }) => ({
+        currentTemp: data.main.temp,
+        feelsLikeTemp: data.main.feels_like,
+        minTemp: data.main.temp_min,
+        maxTemp: data.main.temp_max,
+        humidity: data.main.humidity,
+        sunrise: data.sys.sunrise,
+        sunset: data.sys.sunset,
+        description: data.weather[0].main,
+      }));
     setForecast(forecastData);
   };
 

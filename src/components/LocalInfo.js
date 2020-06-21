@@ -3,7 +3,6 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
   display: grid;
-  //   grid-template-columns: 0.2fr 1fr;
   grid-gap: 5px;
 `;
 
